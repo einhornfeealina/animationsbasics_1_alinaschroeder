@@ -7,61 +7,72 @@
   <style>
     body {
       margin: 0;
-      background-color: #7b7b7b;
       overflow: hidden;
+      background-color: #7b7b7b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      max-height: 100%;
+      max-width: auto;
     }
   </style>
 </head>
 <body>
-  <!-- Verwenden von ES-Modulen -->
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js';
-    import { SplineLoader } from 'https://cdn.jsdelivr.net/npm/@splinetool/loader@1.9.92/build/SplineLoader.module.js';
 
-    // Setzen der A4-Seitenverhältnisse
-    const A4_RATIO = 595 / 842;
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <!-- OrbitControls -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+  <!-- SplineLoader -->
+  <script src="https://unpkg.com/@splinetool/loader@1.0.39/build/spline-loader.min.js"></script>
+
+  <script>
+    // Szene, Kamera, Renderer
     const scene = new THREE.Scene();
-
-    // Kamera erstellen
-    const camera = new THREE.PerspectiveCamera(45, A4_RATIO, 70, 100000);
+    const camera = new THREE.PerspectiveCamera(45, 595/842, 70, 100000);
     camera.position.set(0, 0, 1289.2);
-    camera.quaternion.setFromEuler(new THREE.Euler(0, 0, 0));
 
-    // Renderer einrichten
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     document.body.appendChild(renderer.domElement);
+    renderer.setClearColor(0x7b7b7b, 1);
     renderer.shadowMap.enabled = true;
-    renderer.setClearAlpha(1);
 
-    // Lade die Spline-Szene
-    const loader = new SplineLoader();
-    loader.load('https://prod.spline.design/payNqnsADNnSdpSM/scene.splinecode', (splineScene) => {
-      scene.add(splineScene);
-    });
-
-    // OrbitControls aktivieren
-    const controls = new OrbitControls(camera, renderer.domElement);
+    // Orbit Controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.1;
 
-    // Fenstergröße anpassen
-    window.addEventListener('resize', onResize);
-    function onResize() {
+    // A4-Größe beibehalten bei Resize
+    function resizeRenderer() {
       const height = window.innerHeight;
-      const width = height * A4_RATIO;
+      const width = height * (595 / 842);
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     }
+    window.addEventListener('resize', resizeRenderer);
+    resizeRenderer();
 
+    // SplineLoader laden
+    const loader = new SplineLoader();
+    loader.load(
+      'https://prod.spline.design/payNqnsADNnSdpSM/scene.splinecode',
+      (splineScene) => {
+        scene.add(splineScene);
+        animate();
+      },
+      null,
+      (err) => console.error('Fehler beim Laden der Szene:', err)
+    );
+
+    // Animation
     function animate() {
       controls.update();
       renderer.render(scene, camera);
+      requestAnimationFrame(animate);
     }
-
-    onResize(); // Initiale Anpassung der Größe
-    renderer.setAnimationLoop(animate);
   </script>
 </body>
 </html>
