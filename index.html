@@ -13,12 +13,17 @@
   </style>
 </head>
 <body>
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/controls/OrbitControls.js';
-    import SplineLoader from 'https://unpkg.com/@splinetool/loader@0.9.429/build/spline-loader.module.js';
+  <!-- THREE.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  
+  <!-- OrbitControls CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js"></script>
+  
+  <!-- Spline Loader CDN -->
+  <script src="https://unpkg.com/@splinetool/loader@0.9.429/build/spline-loader.min.js"></script>
 
-    const A4_RATIO = 595 / 842;
+  <script>
+    const A4_RATIO = 595 / 842; // A4-Seitenverhältnis für den Renderer
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, A4_RATIO, 70, 100000);
@@ -27,19 +32,21 @@
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     document.body.appendChild(renderer.domElement);
-
     renderer.shadowMap.enabled = true;
     renderer.setClearAlpha(1);
 
+    // Lade deine Spline-Szene
     const loader = new SplineLoader();
     loader.load('https://prod.spline.design/payNqnsADNnSdpSM/scene.splinecode', (splineScene) => {
       scene.add(splineScene);
     });
 
-    const controls = new OrbitControls(camera, renderer.domElement);
+    // OrbitControls hinzufügen
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
 
+    // Fenstergröße anpassen
     window.addEventListener('resize', onResize);
     function onResize() {
       const height = window.innerHeight;
@@ -54,7 +61,7 @@
       renderer.render(scene, camera);
     }
 
-    onResize(); // initial sizing
+    onResize(); // Initiale Anpassung der Größe
     renderer.setAnimationLoop(animate);
   </script>
 </body>
