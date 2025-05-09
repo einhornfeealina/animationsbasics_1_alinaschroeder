@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interaktives Plakat</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      overflow: hidden;
+      padding: 0;
+      height: 100%;
       background-color: #7b7b7b;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
+
     canvas {
       max-height: 100%;
       max-width: auto;
@@ -24,30 +25,32 @@
 
   <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
   <!-- OrbitControls -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.min.js"></script>
+
   <!-- SplineLoader -->
   <script src="https://unpkg.com/@splinetool/loader@1.0.39/build/spline-loader.min.js"></script>
 
   <script>
-    // Szene, Kamera, Renderer
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, 595/842, 70, 100000);
+
+    const camera = new THREE.PerspectiveCamera(45, 595 / 842, 70, 100000);
     camera.position.set(0, 0, 1289.2);
+    camera.quaternion.setFromEuler(new THREE.Euler(0, 0, 0));
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     document.body.appendChild(renderer.domElement);
     renderer.setClearColor(0x7b7b7b, 1);
     renderer.shadowMap.enabled = true;
 
-    // Orbit Controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.dampingFactor = 0.125;
 
-    // A4-Größe beibehalten bei Resize
     function resizeRenderer() {
       const height = window.innerHeight;
-      const width = height * (595 / 842);
+      const width = height * (595 / 842); // A4-Seitenverhältnis
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -55,7 +58,6 @@
     window.addEventListener('resize', resizeRenderer);
     resizeRenderer();
 
-    // SplineLoader laden
     const loader = new SplineLoader();
     loader.load(
       'https://prod.spline.design/payNqnsADNnSdpSM/scene.splinecode',
@@ -64,10 +66,11 @@
         animate();
       },
       null,
-      (err) => console.error('Fehler beim Laden der Szene:', err)
+      (err) => {
+        console.error('Fehler beim Laden der Szene:', err);
+      }
     );
 
-    // Animation
     function animate() {
       controls.update();
       renderer.render(scene, camera);
