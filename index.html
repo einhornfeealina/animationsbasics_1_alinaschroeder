@@ -13,16 +13,12 @@
   </style>
 </head>
 <body>
-  <!-- THREE.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
-  
-  <!-- OrbitControls CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js"></script>
-  
-  <!-- Spline Loader CDN (neue Version) -->
-  <script src="https://cdn.jsdelivr.net/npm/@splinetool/loader@1.9.92/build/SplineLoader.min.js"></script>
+  <!-- Verwenden von ES-Modulen -->
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js';
+    import { SplineLoader } from 'https://cdn.jsdelivr.net/npm/@splinetool/loader@1.9.92/build/SplineLoader.module.js';
 
-  <script>
     // Setzen der A4-Seitenverhältnisse
     const A4_RATIO = 595 / 842;
     const scene = new THREE.Scene();
@@ -45,7 +41,7 @@
     });
 
     // OrbitControls aktivieren
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
 
