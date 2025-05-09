@@ -19,29 +19,32 @@
   <!-- OrbitControls CDN -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js"></script>
   
-  <!-- Spline Loader CDN -->
-  <script src="https://unpkg.com/@splinetool/loader@0.9.429/build/spline-loader.min.js"></script>
+  <!-- Spline Loader CDN (neue Version) -->
+  <script src="https://cdn.jsdelivr.net/npm/@splinetool/loader@1.9.92/build/SplineLoader.min.js"></script>
 
   <script>
-    const A4_RATIO = 595 / 842; // A4-Seitenverhältnis für den Renderer
+    // Setzen der A4-Seitenverhältnisse
+    const A4_RATIO = 595 / 842;
     const scene = new THREE.Scene();
 
+    // Kamera erstellen
     const camera = new THREE.PerspectiveCamera(45, A4_RATIO, 70, 100000);
     camera.position.set(0, 0, 1289.2);
     camera.quaternion.setFromEuler(new THREE.Euler(0, 0, 0));
 
+    // Renderer einrichten
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     document.body.appendChild(renderer.domElement);
     renderer.shadowMap.enabled = true;
     renderer.setClearAlpha(1);
 
-    // Lade deine Spline-Szene
+    // Lade die Spline-Szene
     const loader = new SplineLoader();
     loader.load('https://prod.spline.design/payNqnsADNnSdpSM/scene.splinecode', (splineScene) => {
       scene.add(splineScene);
     });
 
-    // OrbitControls hinzufügen
+    // OrbitControls aktivieren
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
